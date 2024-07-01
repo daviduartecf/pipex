@@ -2,7 +2,7 @@ CC = cc -g
 NAME = pipex
 FT_PRINTF = ft_printf/libftprintf.a
 FLAGS = -Wall -Werror -Wextra
-SRCS = parse-args.c
+SRCS = parse-args.c free_functions.c
 OBJS = ${SRCS:.c=.o}
 
 all: ${NAME}
