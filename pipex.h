@@ -6,7 +6,7 @@
 /*   By: daduarte <daduarte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 14:27:02 by daduarte          #+#    #+#             */
-/*   Updated: 2024/07/01 15:43:54 by daduarte         ###   ########.fr       */
+/*   Updated: 2024/07/01 16:35:29 by daduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ extern	char	**environ;
 
 typedef struct s_arguments
 {
+	int		*fds;
+	int		*pipefd;
 	char	**cmd1;
 	char	**cmd2;
 	char	*infile;
@@ -34,10 +36,19 @@ typedef struct s_arguments
 	char	*cmd2_path;
 }	t_arguments;
 
+/* PARSING FUNCTIONS */
+char	*get_path(char **env);
+int		*check_args(t_arguments *arguments);
+char	*get_cmd_path(char	*path, char	*cmd);
+int		get_args(char ***args, t_arguments *arguments);
+
+/* FREE FUNCTIONS */
 void	free_array(char **array);
-void	free_arguments(t_arguments *arguments);
 void	free_args(char ***args, int	len);
+void	free_arguments(t_arguments *arguments);
 void	free_all(t_arguments *arguments, char **args, int len, char *error);
 
+/* UTILS */
+int		array_len(char **str_array);
 #endif
 
