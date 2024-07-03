@@ -6,11 +6,38 @@
 /*   By: daduarte <daduarte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 11:47:13 by daduarte          #+#    #+#             */
-/*   Updated: 2024/07/03 14:14:53 by daduarte         ###   ########.fr       */
+/*   Updated: 2024/07/03 15:35:31 by daduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+/*	MAIN PROCESS */
+/*		 |
+	.	 |
+	.	 |
+	create pipe[]
+	.	 |
+	.  fork()
+	.	 /\
+	.	/  \
+	.  /    \
+	child1   parent
+	.  |          |
+	.  |        fork()
+	.  |          |\
+	execute       | \
+	1st cmd       |  \
+	.pipe[1]      |   \
+	.             |    \
+	.         parent    child2
+	.             |          |
+	.             |         execute
+	.             |         2nd cmd
+	.             |         pipe[0]
+	.          end the
+	.          program
+*/
 
 int	main(int argc, char *argv[], char *envp[])
 {
@@ -75,6 +102,7 @@ void	fork_function(t_arguments *arguments, char ***args, int pid1, int pid2)
 		free_all(arguments, args, "error fork");
 	if (pid1 == 0)
 		child_process(arguments, 1);
+	waitpid(pid1, NULL, 0);
 	pid2 = fork();
 	if (pid2 < 0)
 		free_all(arguments, args, "error fork");
