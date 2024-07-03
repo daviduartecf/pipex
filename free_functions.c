@@ -6,7 +6,7 @@
 /*   By: daduarte <daduarte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 15:17:27 by daduarte          #+#    #+#             */
-/*   Updated: 2024/07/01 15:51:28 by daduarte         ###   ########.fr       */
+/*   Updated: 2024/07/03 14:06:43 by daduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	free_arguments(t_arguments *arguments)
 	free(arguments);
 }
 
-void	free_args(char ***args, int	len)
+void	free_args(char ***args)
 {
 	int	i;
 	int	j;
@@ -47,7 +47,7 @@ void	free_args(char ***args, int	len)
 	i = 0;
 	if (args)
 	{
-		while (i < len)
+		while (args[i])
 		{
 			j = 0;
 			if (args[i])
@@ -65,19 +65,29 @@ void	free_args(char ***args, int	len)
 	}
 }
 
-void	free_all(t_arguments *arguments, char **args, int len, char *error)
+void	free_all(t_arguments *arguments, char ***args, char *error)
 {
 	int	i;
 
 	i = 0;
 	perror(error);
-	while (i < len)
-		free(args[i]);
+	while (args[i])
+	{
+		free_array(args[i]);
+		i++;
+	}
 	free(args);
+	free(arguments->fds);
+	free(arguments->pipefd);
 	if (error[0] == 'e')
 		free_arguments(arguments);
-	free(arguments->cmd1_path);
-	free(arguments->cmd2_path);
-	free(arguments);
 	exit(1);
+}
+
+void	last_free(t_arguments *arguments, char ***args)
+{
+	free(arguments->fds);
+	free(arguments->pipefd);
+	free_arguments(arguments);
+	free_args(args);
 }
