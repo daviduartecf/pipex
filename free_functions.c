@@ -6,7 +6,7 @@
 /*   By: daduarte <daduarte@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 15:17:27 by daduarte          #+#    #+#             */
-/*   Updated: 2024/07/01 15:51:28 by daduarte         ###   ########.fr       */
+/*   Updated: 2024/07/04 16:01:06 by daduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,19 @@ void	free_array(char **array)
 	free(array);
 }
 
-void	free_arguments(t_arguments *arguments)
+void	free_pipex(t_pipex *pipex)
 {
 	int	i;
 
 	i = 0;
-	free_array(arguments->cmd1);
-	free_array(arguments->cmd2);
-	free(arguments->cmd1_path);
-	free(arguments->cmd2_path);
-	free(arguments->infile);
-	free(arguments->outfile);
-	free(arguments);
+	free_array(pipex->cmd1);
+	free_array(pipex->cmd2);
+	free(pipex->infile);
+	free(pipex->outfile);
+	free(pipex);
 }
 
-void	free_args(char ***args, int	len)
+void	free_args(char ***args)
 {
 	int	i;
 	int	j;
@@ -47,7 +45,7 @@ void	free_args(char ***args, int	len)
 	i = 0;
 	if (args)
 	{
-		while (i < len)
+		while (args[i])
 		{
 			j = 0;
 			if (args[i])
@@ -65,19 +63,28 @@ void	free_args(char ***args, int	len)
 	}
 }
 
-void	free_all(t_arguments *arguments, char **args, int len, char *error)
+void	free_all(t_pipex *pipex, char ***args, char *error)
 {
 	int	i;
 
 	i = 0;
-	perror(error);
-	while (i < len)
-		free(args[i]);
+	while (args[i])
+	{
+		free_array(args[i]);
+		i++;
+	}
 	free(args);
+	free(pipex->fds);
+	free(pipex->pipefd);
 	if (error[0] == 'e')
-		free_arguments(arguments);
-	free(arguments->cmd1_path);
-	free(arguments->cmd2_path);
-	free(arguments);
-	exit(1);
+		free_pipex(pipex);
+	perror(error);
+	exit(0);
+}
+
+void	last_free(t_pipex *pipex, char ***args)
+{
+	free(pipex->pipefd);
+	free_pipex(pipex);
+	free_args(args);
 }
